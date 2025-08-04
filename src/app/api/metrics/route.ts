@@ -23,42 +23,114 @@ let cachedData: {
 const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
 
 async function fetchTrialConversionData(subscriptionData: SubscriptionData[]): Promise<TrialConversionData[]> {
-  console.log('🔄 Using realistic trial conversion rates...');
+  console.log('🔄 Calculating actual trial-to-paid conversion rates from Stripe events...');
   
-  // Instead of trying to calculate from current data (which is inaccurate),
-  // use realistic industry-standard conversion rates based on your business
-  const realisticConversionRates = {
-    'prod_S9H5fDgFs9Lv7y': 45.0, // Millionaire Club: 45%
-    'prod_S8Y6cYg18JDFLG': 42.0, // Network: 42% 
-    'prod_RslgGi1t7MBOE6': 38.0  // Academy: 38%
-  };
-
-  // Calculate realistic trial counts based on current active subscriptions
-  const results: TrialConversionData[] = Object.keys(BUDGETDOG_PRODUCTS).map(productId => {
-    const activeSubscriptions = subscriptionData.filter(sub => 
-      sub.product_id === productId && sub.status === 'active'
-    ).length;
+  try {
+    // Get trial-to-active conversion events from the last 12 months
+    const oneYearAgo = Math.floor((Date.now() - 365 * 24 * 60 * 60 * 1000) / 1000);
+    const now = Math.floor(Date.now() / 1000);
     
-    const conversionRate = realisticConversionRates[productId as keyof typeof realisticConversionRates] || 40.0;
+    const conversionData = new Map<string, { conversions: number; trials: number }>();
     
-    // Estimate total trials that would result in current active subs at this conversion rate
-    const estimatedTrials = activeSubscriptions > 0 ? Math.round(activeSubscriptions / (conversionRate / 100)) : 0;
+    // Initialize for all products
+    Object.keys(BUDGETDOG_PRODUCTS).forEach(productId => {
+      conversionData.set(productId, { conversions: 0, trials: 0 });
+    });
     
-    return {
+    console.log('📊 Analyzing trial conversion events from Stripe...');
+    
+    // Track trial-to-paid conversions from subscription.updated events
+    let totalEvents = 0;
+    for await (const event of stripe.events.list({
+      type: 'customer.subscription.updated',
+      created: { gte: oneYearAgo, lte: now },
+      limit: 100
+    })) {
+      totalEvents++;
+      const subscription = event.data.object as Stripe.Subscription;
+      const previousAttributes = event.data.previous_attributes as any;
+      
+      // Find Budgetdog products in this subscription
+      const budgetdogItem = subscription.items.data.find(item => 
+        item.price?.product && Object.keys(BUDGETDOG_PRODUCTS).includes(item.price.product as string)
+      );
+      
+      if (budgetdogItem && budgetdogItem.price?.product) {
+        const productId = budgetdogItem.price.product as string;
+        const data = conversionData.get(productId)!;
+        
+        // Track trial-to-active conversions
+        if (previousAttributes?.status === 'trialing' && subscription.status === 'active') {
+          data.conversions++;
+          console.log(`✅ Trial conversion: ${BUDGETDOG_PRODUCTS[productId as keyof typeof BUDGETDOG_PRODUCTS]}`);
+        }
+      }
+    }
+    
+    // Track all trial starts from subscription.created events
+    for await (const event of stripe.events.list({
+      type: 'customer.subscription.created',
+      created: { gte: oneYearAgo, lte: now },
+      limit: 100
+    })) {
+      totalEvents++;
+      const subscription = event.data.object as Stripe.Subscription;
+      
+      // Find Budgetdog products in this subscription
+      const budgetdogItem = subscription.items.data.find(item => 
+        item.price?.product && Object.keys(BUDGETDOG_PRODUCTS).includes(item.price.product as string)
+      );
+      
+      if (budgetdogItem && budgetdogItem.price?.product) {
+        const productId = budgetdogItem.price.product as string;
+        const data = conversionData.get(productId)!;
+        
+        // Count trials that were created
+        if (subscription.status === 'trialing') {
+          data.trials++;
+        }
+        // Count direct active subscriptions as both trial and conversion
+        else if (subscription.status === 'active') {
+          data.trials++;
+          data.conversions++;
+        }
+      }
+    }
+    
+    console.log(`📈 Processed ${totalEvents} events from the last 12 months`);
+    
+    // Create results
+    const results: TrialConversionData[] = Object.keys(BUDGETDOG_PRODUCTS).map(productId => {
+      const data = conversionData.get(productId)!;
+      const conversionRate = data.trials > 0 ? (data.conversions / data.trials) * 100 : 0;
+      
+      return {
+        productId,
+        conversions: data.conversions,
+        total_trials: data.trials,
+        conversion_rate: conversionRate
+      };
+    });
+    
+    console.log(`✅ Calculated ACTUAL conversion rates:`);
+    results.forEach(result => {
+      const productName = BUDGETDOG_PRODUCTS[result.productId as keyof typeof BUDGETDOG_PRODUCTS];
+      console.log(`${productName}: ${result.conversions}/${result.total_trials} (${result.conversion_rate.toFixed(1)}%)`);
+    });
+    
+    return results;
+    
+  } catch (error) {
+    console.error('❌ Error calculating actual conversion rates:', error);
+    
+    // Fallback: show 0% if we can't calculate real rates
+    return Object.keys(BUDGETDOG_PRODUCTS).map(productId => ({
       productId,
-      conversions: activeSubscriptions,
-      total_trials: estimatedTrials,
-      conversion_rate: conversionRate
-    };
-  });
-
-  console.log(`✅ Using realistic conversion rates for ${results.length} products`);
-  results.forEach(result => {
-    const productName = BUDGETDOG_PRODUCTS[result.productId as keyof typeof BUDGETDOG_PRODUCTS];
-    console.log(`${productName}: ${result.conversions}/${result.total_trials} (${result.conversion_rate.toFixed(1)}%)`);
-  });
-
-  return results;
+      conversions: 0,
+      total_trials: 0,
+      conversion_rate: 0
+    }));
+  }
 }
 
 async function fetchStripeData(): Promise<SubscriptionData[]> {
