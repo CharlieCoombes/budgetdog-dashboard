@@ -1,0 +1,188 @@
+{
+  "summary": {
+    "totalTrials": 17,
+    "uniqueEmails": 16,
+    "dateRange": {
+      "start": "2025-08-01T00:00:00.000Z",
+      "end": "2025-08-31T23:59:59.000Z"
+    },
+    "byProduct": {
+      "Budgetdog Network": 2,
+      "Budgetdog Academy": 13,
+      "Millionaire Club": 2
+    }
+  },
+  "emails": [
+    "adowney28@gmail.com",
+    "ajoliehill@gmail.com",
+    "andrewjkelleher@yahoo.com",
+    "drewjskrocki@gmail.com",
+    "garcia.vanessa.ms@gmail.com",
+    "ggunter3680@gmail.com",
+    "griffin.joyner123@gmail.com",
+    "hollyaforrest@gmail.com",
+    "kfwitters@gmail.com",
+    "lcurryg@yahoo.com",
+    "leah.keith@gmail.com",
+    "nettie0804@yahoo.com",
+    "shanelleilucas@yahoo.com",
+    "smithvidal_@outlook.com",
+    "toby.hearsey@gmail.com",
+    "zachb10@live.com"
+  ],
+  "details": [
+    {
+      "email": "leah.keith@gmail.com",
+      "subscriptionId": "sub_1S2HL2DWpSOAblNcQyU2oVXo",
+      "product": "Budgetdog Network",
+      "productId": "prod_S8Y6cYg18JDFLG",
+      "createdAt": "2025-08-31T19:54:49.000Z",
+      "trialEnd": "2025-09-30T19:54:49.000Z",
+      "amount": 269.89
+    },
+    {
+      "email": "shanelleilucas@yahoo.com",
+      "subscriptionId": "sub_1S1y3aDWpSOAblNcPgWr6owP",
+      "product": "Budgetdog Academy",
+      "productId": "prod_RslgGi1t7MBOE6",
+      "createdAt": "2025-08-30T23:19:36.000Z",
+      "trialEnd": "2025-09-29T23:19:36.000Z",
+      "amount": 17.99
+    },
+    {
+      "email": "nettie0804@yahoo.com",
+      "subscriptionId": "sub_1S1tGADWpSOAblNcp57buBGh",
+      "product": "Budgetdog Academy",
+      "productId": "prod_RslgGi1t7MBOE6",
+      "createdAt": "2025-08-30T18:12:16.000Z",
+      "trialEnd": "2025-09-29T18:12:16.000Z",
+      "amount": 17.99
+    },
+    {
+      "email": "andrewjkelleher@yahoo.com",
+      "subscriptionId": "sub_1S1GSHDWpSOAblNc09TVJ3gz",
+      "product": "Budgetdog Academy",
+      "productId": "prod_RslgGi1t7MBOE6",
+      "createdAt": "2025-08-29T00:46:11.000Z",
+      "trialEnd": "2025-09-28T00:46:11.000Z",
+      "amount": 17.99
+    },
+    {
+      "email": "ggunter3680@gmail.com",
+      "subscriptionId": "sub_1S1AdFDWpSOAblNcN2hMBGfN",
+      "product": "Budgetdog Academy",
+      "productId": "prod_RslgGi1t7MBOE6",
+      "createdAt": "2025-08-28T18:33:07.000Z",
+      "trialEnd": "2025-09-27T18:33:07.000Z",
+      "amount": 17.99
+    },
+    {
+      "email": "drewjskrocki@gmail.com",
+      "subscriptionId": "sub_1S19KWDWpSOAblNcJ7TVPR48",
+      "product": "Budgetdog Network",
+      "productId": "prod_S8Y6cYg18JDFLG",
+      "createdAt": "2025-08-28T17:09:42.000Z",
+      "trialEnd": "2025-09-27T17:09:42.000Z",
+      "amount": 269.89
+    },
+    {
+      "email": "zachb10@live.com",
+      "subscriptionId": "sub_1S0xrhDWpSOAblNcFOaPqacu",
+      "product": "Budgetdog Academy",
+      "productId": "prod_RslgGi1t7MBOE6",
+      "createdAt": "2025-08-28T04:55:10.000Z",
+      "trialEnd": "2025-09-27T04:55:10.000Z",
+      "amount": 195
+    },
+    {
+      "email": "toby.hearsey@gmail.com",
+      "subscriptionId": "sub_1S0xFKDWpSOAblNcJ4lb8bf0",
+      "product": "Millionaire Club",
+      "productId": "prod_S9H5fDgFs9Lv7y",
+      "createdAt": "2025-08-28T04:15:32.000Z",
+      "trialEnd": "2025-09-27T04:15:32.000Z",
+      "amount": 17.99
+    },
+    {
+      "email": "kfwitters@gmail.com",
+      "subscriptionId": "sub_1S0tJlDWpSOAblNc7liJfLOH",
+      "product": "Budgetdog Academy",
+      "productId": "prod_RslgGi1t7MBOE6",
+      "createdAt": "2025-08-28T00:03:51.000Z",
+      "trialEnd": "2025-09-27T00:03:51.000Z",
+      "amount": 17.99
+    },
+    {
+      "email": "ajoliehill@gmail.com",
+      "subscriptionId": "sub_1S0t6WDWpSOAblNcAoKDbYGf",
+      "product": "Budgetdog Academy",
+      "productId": "prod_RslgGi1t7MBOE6",
+      "createdAt": "2025-08-27T23:50:00.000Z",
+      "trialEnd": "2025-09-26T23:50:00.000Z",
+      "amount": 17.99
+    },
+    {
+      "email": "garcia.vanessa.ms@gmail.com",
+      "subscriptionId": "sub_1S0VWeDWpSOAblNc7sFMCgHa",
+      "product": "Budgetdog Academy",
+      "productId": "prod_RslgGi1t7MBOE6",
+      "createdAt": "2025-08-26T22:39:33.000Z",
+      "trialEnd": "2025-09-25T22:39:33.000Z",
+      "amount": 17.99
+    },
+    {
+      "email": "garcia.vanessa.ms@gmail.com",
+      "subscriptionId": "sub_1S0VHhDWpSOAblNcoKWXOZcj",
+      "product": "Budgetdog Academy",
+      "productId": "prod_RslgGi1t7MBOE6",
+      "createdAt": "2025-08-26T22:24:06.000Z",
+      "trialEnd": "2025-09-25T22:24:06.000Z",
+      "amount": 17.99
+    },
+    {
+      "email": "smithvidal_@outlook.com",
+      "subscriptionId": "sub_1S0DRLDWpSOAblNcGt9U19lj",
+      "product": "Budgetdog Academy",
+      "productId": "prod_RslgGi1t7MBOE6",
+      "createdAt": "2025-08-26T03:20:53.000Z",
+      "trialEnd": "2025-09-25T03:20:53.000Z",
+      "amount": 17.99
+    },
+    {
+      "email": "griffin.joyner123@gmail.com",
+      "subscriptionId": "sub_1S0Az9DWpSOAblNcEh1GcFhA",
+      "product": "Budgetdog Academy",
+      "productId": "prod_RslgGi1t7MBOE6",
+      "createdAt": "2025-08-26T00:43:37.000Z",
+      "trialEnd": "2025-09-25T00:43:37.000Z",
+      "amount": 17.99
+    },
+    {
+      "email": "lcurryg@yahoo.com",
+      "subscriptionId": "sub_1S08uZDWpSOAblNchrkF3VMX",
+      "product": "Budgetdog Academy",
+      "productId": "prod_RslgGi1t7MBOE6",
+      "createdAt": "2025-08-25T22:30:44.000Z",
+      "trialEnd": "2025-09-24T22:30:44.000Z",
+      "amount": 17.99
+    },
+    {
+      "email": "adowney28@gmail.com",
+      "subscriptionId": "sub_1S08D5DWpSOAblNcx0H0W5O5",
+      "product": "Millionaire Club",
+      "productId": "prod_S9H5fDgFs9Lv7y",
+      "createdAt": "2025-08-25T21:45:48.000Z",
+      "trialEnd": "2025-09-24T21:45:48.000Z",
+      "amount": 17.99
+    },
+    {
+      "email": "hollyaforrest@gmail.com",
+      "subscriptionId": "sub_1S07jgDWpSOAblNcpvTS7nGM",
+      "product": "Budgetdog Academy",
+      "productId": "prod_RslgGi1t7MBOE6",
+      "createdAt": "2025-08-25T21:15:26.000Z",
+      "trialEnd": "2025-09-24T21:15:26.000Z",
+      "amount": 17.99
+    }
+  ]
+}

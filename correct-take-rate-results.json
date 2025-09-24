@@ -1,0 +1,54 @@
+{
+  "timestamp": "2025-09-24T09:50:19.456Z",
+  "question": "Of Academy users in August 2025, how many also started Avery trials?",
+  "results": {
+    "academyUsers": 72,
+    "averyTrials": 85,
+    "overlap": 14,
+    "takeRate": 19.444444444444446
+  },
+  "overlapEmails": [
+    "ajoliehill@gmail.com",
+    "chowpaypal@gmail.com",
+    "collings.heather@gmail.com",
+    "davis.g.smith12@gmail.com",
+    "elizabeth.c.welch@gmail.com",
+    "garcia.vanessa.ms@gmail.com",
+    "hicks.jessicaj@gmail.com",
+    "jacobgoldberg1@yahoo.com",
+    "jaymatthewd@gmail.com",
+    "jkuklock@yahoo.com",
+    "mcneely426@gmail.com",
+    "smithvidal_@outlook.com",
+    "stefanie.m.garner@gmail.com",
+    "zachb10@live.com"
+  ],
+  "academyOnlyEmails": [
+    "802catherine.burke@gmail.com",
+    "tripletiger1974@gmail.com",
+    "josephinemboac@gmail.com",
+    "lfatica@gmail.com",
+    "themelchercompany@gmail.com",
+    "karen14938@gmail.com",
+    "dimaeasterday@gmail.com",
+    "spearsrebecca7@gmail.com",
+    "briancontona@gmail.com",
+    "afca8887@gmail.com"
+  ],
+  "averyOnlyEmails": [
+    "leah.keith@gmail.com",
+    "shanelleilucas@yahoo.com",
+    "nettie0804@yahoo.com",
+    "andrewjkelleher@yahoo.com",
+    "ggunter3680@gmail.com",
+    "drewjskrocki@gmail.com",
+    "bachmanzac@gmail.com",
+    "toby.hearsey@gmail.com",
+    "kfwitters@gmail.com",
+    "griffin.joyner123@gmail.com"
+  ],
+  "productBreakdown": {
+    "Budgetdog Academy": 13,
+    "Millionaire Club": 1
+  }
+}

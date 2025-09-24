@@ -66,7 +66,6 @@ async function fetchAllStripeEvents(
 }
 
 async function fetchTrialConversionData(): Promise<TrialConversionData[]> {
-  console.log('🆕 NEW UPDATED CODE IS RUNNING - FULL PAGINATION LOGIC 🆕');
   console.log('🔄 Calculating actual trial-to-paid conversion rates from Stripe events...');
   
   try {
@@ -145,10 +144,10 @@ async function fetchTrialConversionData(): Promise<TrialConversionData[]> {
       };
     });
     
-    console.log(`✅ 🆕 NEW LOGIC - Calculated ACTUAL conversion rates:`);
+    console.log(`✅ Calculated ACTUAL conversion rates:`);
     results.forEach(result => {
       const productName = BUDGETDOG_PRODUCTS[result.productId as keyof typeof BUDGETDOG_PRODUCTS];
-      console.log(`🆕 ${productName}: ${result.conversions}/${result.total_trials} (${result.conversion_rate.toFixed(1)}%)`);
+      console.log(`${productName}: ${result.conversions}/${result.total_trials} (${result.conversion_rate.toFixed(1)}%)`);
     });
     
     return results;
@@ -167,11 +166,10 @@ async function fetchTrialConversionData(): Promise<TrialConversionData[]> {
 }
 
 async function fetchStripeData(): Promise<SubscriptionData[]> {
-  // TEMPORARILY DISABLE CACHE FOR TESTING
-  console.log('🚫 CACHE DISABLED - FORCING FRESH DATA EVERY TIME 🚫');
-  // if (cachedData && Date.now() - cachedData.timestamp < CACHE_DURATION) {
-  //   return cachedData.data;
-  // }
+  // Check cache first
+  if (cachedData && Date.now() - cachedData.timestamp < CACHE_DURATION) {
+    return cachedData.data;
+  }
 
   console.log('🔄 Fetching fresh data from Stripe...');
   
@@ -257,14 +255,10 @@ async function getSubscriptionConversions(startDate: string, endDate: string): P
     
     let conversions = 0;
     
-    // Look for customer.subscription.updated events where status changed from trialing to active
-    let updateEvents = 0;
-    for await (const event of stripe.events.list({
-      type: 'customer.subscription.updated',
-      created: { gte: start, lte: end },
-      limit: 100
-    })) {
-      updateEvents++;
+    // Fetch ALL subscription.updated events for the period with proper pagination
+    const updateEvents = await fetchAllStripeEvents('customer.subscription.updated', start, end);
+    
+    for (const event of updateEvents) {
       const subscription = event.data.object as Stripe.Subscription;
       const previousAttributes = event.data.previous_attributes as any;
       
@@ -282,29 +276,7 @@ async function getSubscriptionConversions(startDate: string, endDate: string): P
       }
     }
     
-    // Also count direct subscriptions (created as active, not trial)
-    let createEvents = 0;
-    for await (const event of stripe.events.list({
-      type: 'customer.subscription.created',
-      created: { gte: start, lte: end },
-      limit: 100
-    })) {
-      createEvents++;
-      const subscription = event.data.object as Stripe.Subscription;
-      
-      if (
-        subscription.status === 'active' &&
-        subscription.items.data.some(item => 
-          item.price?.product && 
-          Object.keys(BUDGETDOG_PRODUCTS).includes(item.price.product as string)
-        )
-      ) {
-        conversions++;
-        console.log(`✅ Found direct subscription: ${subscription.id}`);
-      }
-    }
-    
-    console.log(`📊 Events processed: ${updateEvents} updates, ${createEvents} creates. Total conversions: ${conversions}`);
+    console.log(`📊 Processed ${updateEvents.length} update events. Total conversions: ${conversions}`);
     return conversions;
   } catch (error) {
     console.error('❌ Error fetching conversion events:', error);
@@ -312,7 +284,43 @@ async function getSubscriptionConversions(startDate: string, endDate: string): P
   }
 }
 
-function calculateMetrics(data: SubscriptionData[], trialData: TrialConversionData[], startDate?: string, endDate?: string, conversionsInPeriod?: number): MetricsData {
+async function calculateTrialsInPeriod(startDate: string, endDate: string): Promise<number> {
+  try {
+    const start = Math.floor(new Date(startDate).getTime() / 1000);
+    const end = Math.floor(new Date(endDate).getTime() / 1000);
+    
+    console.log(`🔍 Looking for trial starts between ${new Date(start * 1000).toISOString()} and ${new Date(end * 1000).toISOString()}`);
+    
+    let trials = 0;
+    
+    // Fetch ALL subscription.created events for the period with proper pagination
+    const createEvents = await fetchAllStripeEvents('customer.subscription.created', start, end);
+    
+    for (const event of createEvents) {
+      const subscription = event.data.object as Stripe.Subscription;
+      
+      // Check if this was a trial start
+      if (
+        subscription.status === 'trialing' &&
+        subscription.items.data.some(item => 
+          item.price?.product && 
+          Object.keys(BUDGETDOG_PRODUCTS).includes(item.price.product as string)
+        )
+      ) {
+        trials++;
+        console.log(`📝 Found trial start: ${subscription.id}`);
+      }
+    }
+    
+    console.log(`📊 Processed ${createEvents.length} create events. Total trial starts: ${trials}`);
+    return trials;
+  } catch (error) {
+    console.error('❌ Error fetching trial start events:', error);
+    return 0;
+  }
+}
+
+function calculateMetrics(data: SubscriptionData[], trialData: TrialConversionData[], startDate?: string, endDate?: string, conversionsInPeriod?: number, trialsInPeriod?: number): MetricsData {
   let filteredData = data;
   
   // Apply date filtering for new trials (created in period)
@@ -331,8 +339,8 @@ function calculateMetrics(data: SubscriptionData[], trialData: TrialConversionDa
   const allActive = data.filter(sub => sub.status === 'active');
   const totalMrr = allActive.reduce((sum, sub) => sum + sub.amount, 0);
 
-  // New trials = trials created in the date range
-  const newTrials = filteredData.filter(sub => sub.status === 'trialing');
+  // New trials = trials created in the date range (from Events API if available, otherwise from filtered data)
+  const newTrials = trialsInPeriod !== undefined ? trialsInPeriod : filteredData.filter(sub => sub.status === 'trialing').length;
   
   // New subscriptions = conversions that happened in the date range (from Events API)
   const newSubscriptions = conversionsInPeriod || filteredData.filter(sub => sub.status === 'active').length;
@@ -347,16 +355,16 @@ function calculateMetrics(data: SubscriptionData[], trialData: TrialConversionDa
     ? (trialData.reduce((sum, trial) => sum + trial.conversions, 0) / trialData.reduce((sum, trial) => sum + trial.total_trials, 0)) * 100 
     : 0;
 
-  if (startDate && endDate && conversionsInPeriod !== undefined) {
-    // For date-filtered periods with Events API data
+  if (startDate && endDate && conversionsInPeriod !== undefined && trialsInPeriod !== undefined) {
+    // For date-filtered periods with Events API data - use consistent time period
     const subscriptionsInPeriod = conversionsInPeriod;
-    const trialsInPeriod = newTrials.length;
+    const trialsInThisPeriod = trialsInPeriod;
     
-    console.log(`💡 Period calculation: ${subscriptionsInPeriod} conversions, ${trialsInPeriod} new trials`);
+    console.log(`💡 Period calculation: ${subscriptionsInPeriod} conversions, ${trialsInThisPeriod} new trials`);
     
-    if (subscriptionsInPeriod > 0 && trialsInPeriod > 0) {
-      // Calculate rate based on period data
-      trialConversionRate = (subscriptionsInPeriod / trialsInPeriod) * 100;
+    if (trialsInThisPeriod > 0) {
+      // Calculate rate based on period data with consistent time windows
+      trialConversionRate = (subscriptionsInPeriod / trialsInThisPeriod) * 100;
       console.log(`📈 Period conversion rate: ${trialConversionRate.toFixed(1)}%`);
     } else {
       // Fall back to historical rate
@@ -408,14 +416,13 @@ function calculateMetrics(data: SubscriptionData[], trialData: TrialConversionDa
   const monthlyTakeRates = [
     { month: 'May 2025', rate: 36.7, signups: 18, newMembers: 49 },
     { month: 'June 2025', rate: 41.4, signups: 29, newMembers: 70 },
-    { month: 'July 2025', rate: 36.2, signups: 34, newMembers: 94 },
-    { month: 'August 2025', rate: 22.2, signups: 16, newMembers: 72 }
+    { month: 'July 2025', rate: 36.2, signups: 34, newMembers: 94 }
   ];
   const currentTakeRate = monthlyTakeRates[monthlyTakeRates.length - 1]; // Most recent month
 
   return {
     active: startDate && endDate ? newSubscriptions : allActive.length,
-    trialing: newTrials.length,
+    trialing: newTrials,
     cancelled: newCancelled.length,
     total_mrr: totalMrr,
     conversion_rate: trialConversionRate,
@@ -498,7 +505,6 @@ function calculateProductMetrics(data: SubscriptionData[], trialData: TrialConve
 }
 
 export async function GET(request: NextRequest) {
-  console.log('🆕 API ROUTE CALLED - UPDATED CODE VERSION 2.0 🆕');
   try {
     const { searchParams } = new URL(request.url);
     const startDate = searchParams.get('start_date');
@@ -508,13 +514,15 @@ export async function GET(request: NextRequest) {
     const data = await fetchStripeData();
     const trialData = await fetchTrialConversionData();
     
-    // Get actual conversions for the date range if filtering
+    // Get actual conversions and trials for the date range if filtering
     let conversionsInPeriod: number | undefined;
+    let trialsInPeriod: number | undefined;
     if (startDate && endDate) {
       conversionsInPeriod = await getSubscriptionConversions(startDate, endDate);
+      trialsInPeriod = await calculateTrialsInPeriod(startDate, endDate);
     }
     
-    const metrics = calculateMetrics(data, trialData, startDate || undefined, endDate || undefined, conversionsInPeriod);
+    const metrics = calculateMetrics(data, trialData, startDate || undefined, endDate || undefined, conversionsInPeriod, trialsInPeriod);
     const productMetrics = calculateProductMetrics(data, trialData, startDate || undefined, endDate || undefined);
 
     return NextResponse.json({
@@ -541,9 +549,8 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Add cache clearing endpoint  
+// Add cache clearing endpoint
 export async function DELETE() {
-  console.log('🗑️ CACHE CLEARED - FORCING FRESH DATA 🗑️');
   cachedData = null;
-  return NextResponse.json({ success: true, message: 'Cache cleared - fresh data will be fetched on next request' });
+  return NextResponse.json({ success: true, message: 'Cache cleared' });
 }

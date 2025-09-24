@@ -292,7 +292,7 @@ export default function Dashboard() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-6 sm:mb-8">
           <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
             <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Take Rate Analysis</h2>
-            <p className="text-gray-600 text-sm mt-1">Budgetdog Academy → Avery trial conversion rates</p>
+            <p className="text-gray-600 text-sm mt-1">Budgetdog Academy → Avery trial conversion rates (May-August 2025)</p>
           </div>
           <div className="p-4 sm:p-6">
             {loading ? (

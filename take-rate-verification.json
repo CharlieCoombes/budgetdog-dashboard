@@ -1,0 +1,96 @@
+{
+  "timestamp": "2025-09-24T09:34:15.947Z",
+  "verified": {
+    "averyTrials": 85,
+    "academySignups": 72,
+    "overlap": 13,
+    "takeRate": 15.294117647058824
+  },
+  "dataQuality": {
+    "academyIssues": [
+      {
+        "type": "spaces",
+        "email": "elizabeth.c.welch@ .com",
+        "index": 39
+      },
+      {
+        "type": "space_in_domain",
+        "email": "elizabeth.c.welch@ .com",
+        "index": 39
+      }
+    ],
+    "academyDuplicates": [
+      "davis.g.smith12@gmail.com",
+      "afca8887@gmail.com",
+      "diaz300@gmail.com",
+      "dguerrero1313@gmail.com"
+    ],
+    "academyNotInStripe": [
+      "802catherine.burke@gmail.com",
+      "tripletiger1974@gmail.com",
+      "josephinemboac@gmail.com",
+      "lfatica@gmail.com",
+      "themelchercompany@gmail.com",
+      "karen14938@gmail.com",
+      "dimaeasterday@gmail.com",
+      "spearsrebecca7@gmail.com",
+      "briancontona@gmail.com",
+      "afca8887@gmail.com",
+      "thackermeera14@gmail.com",
+      "contact@svetlanasburd.com",
+      "jessicaleehoward412@gmail.com",
+      "casey.reale@gmail.com",
+      "suziventurini77@gmail.com",
+      "dguerrero1313@gmail.com",
+      "jsnewsomesr@gmail.com",
+      "melissamschaefer@yahoo.com",
+      "kckranick@gmail.com",
+      "khuuandco@gmail.com",
+      "agasulewski@yahoo.com",
+      "nanz@me.com",
+      "diaz300@gmail.com",
+      "chambocam@gmail.com",
+      "rocco@ironcladconsultants.com",
+      "maeganlm@gmail.com",
+      "elizabeth.c.welch@.com",
+      "tiffanydepley@gmail.com",
+      "bgallardo28@gmail.com",
+      "jmunji@gmail.com",
+      "badriya.chandoo@gmail.com",
+      "rodde194@gmail.com",
+      "szomalt@gmail.com",
+      "lurchmega5@gmail.com",
+      "desbahroseyazzie@gmail.com",
+      "jasl2088@gmail.com",
+      "fitnessgurl21@yahoo.com",
+      "hoops1298@yahoo.com",
+      "sessumshhh@yahoo.com",
+      "elizabethmajerick@gmail.com",
+      "cthompson@fblglaw.com",
+      "becargallego@gmail.com",
+      "tracyteves@gmail.com",
+      "kristarpatrick@gmail.com",
+      "ktinvest@yahoo.com",
+      "quinnjs74@gmail.com",
+      "happyemily7@gmail.com",
+      "jamieraerush@gmail.com",
+      "chopkins032793@gmail.com",
+      "janaraejones3@gmail.com",
+      "dokedkt3@gmail.com",
+      "jeremy80wv@yahoo.com",
+      "tysonrupa@gmail.com",
+      "dergie7@gmail.com",
+      "jerrikajoybsn@gmail.com",
+      "camimartin.310@gmail.com",
+      "jasoncvargas@gmail.com",
+      "mmaeva@san.rr.com",
+      "mazda_luvr128@yahoo.com"
+    ]
+  },
+  "crossReference": {
+    "academyInStripe": 72,
+    "inBothLists": 12,
+    "onlyInUserList": 60,
+    "onlyInStripe": 60
+  }
+}
